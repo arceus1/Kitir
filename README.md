@@ -1,2 +1,0 @@
-# Kitir
-Memudahkan menulis kitir
