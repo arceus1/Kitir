@@ -4,15 +4,108 @@
   <meta charset="UTF-8">
   <title>Laporan Harian Divisi Sablon</title>
   <style>
-    body { font-family: Arial, sans-serif; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid black; text-align: center; padding: 6px; }
-    .header { display: flex; justify-content: space-between; align-items: center; }
-    .title { font-weight: bold; }
-    input[type="text"], input[type="number"] {
-      width: 100%; border: none; text-align: center; font-family: inherit; font-size: inherit;
+  .custom-dropdown {
+    border: 1px solid #ccc;
+    padding: 6px;
+    cursor: pointer;
+    background: #fff;
+    text-align: center;
+  }
+  .dropdown-options {
+    display: none;
+    position: absolute;
+    background: #fff;
+    border: 1px solid #aaa;
+    z-index: 10;
+    width: 300px;
+  }
+  .dropdown-columns {
+    display: flex;
+  }
+  .column {
+    flex: 1;
+    border-right: 1px solid #ddd;
+  }
+  .column:last-child {
+    border-right: none;
+  }
+  .column div {
+    padding: 6px;
+    cursor: pointer;
+  }
+  .column div:hover {
+    background-color: #eee;
+  }
+
+  body { font-family: Arial, sans-serif; }
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    min-width: 700px;
+  }
+  th, td {
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px;
+  }
+
+  /* Lebar kolom khusus */
+  table th:nth-child(1),
+  table td:nth-child(1),
+  table th:nth-child(2),
+  table td:nth-child(2),
+  table th:nth-child(5),
+  table td:nth-child(5) {
+    width: 80px; /* kolom Waktu Awal, Waktu Akhir, dan Jumlah Baik */
+  }
+
+  table th:nth-child(3),
+  table td:nth-child(3) {
+    width: 100px; /* kolom Jenis Kegiatan */
+    min-width: 200px;
+  }
+
+  table th:nth-child(4),
+  table td:nth-child(4) {
+    width: 80px; /* kolom Judul Sablon */
+    min-width: 100px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .title {
+    font-weight: bold;
+  }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    border: none;
+    text-align: center;
+    font-family: inherit;
+    font-size: inherit;
+  }
+  input:focus {
+    outline: none;
+  }
+
+  @media screen and (max-width: 600px) {
+    .table-container {
+      overflow-x: auto;
     }
-    input:focus { outline: none; }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+    }
+  }
   </style>
 </head>
 <body>
@@ -31,21 +124,23 @@
   </div>
 </div>
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="2">WAKTU</th>
-      <th rowspan="2">JENIS KEGIATAN</th>
-      <th rowspan="2">JUDUL SABLON</th>
-      <th rowspan="2">JUMLAH BAIK</th>
-    </tr>
-    <tr>
-      <th>AWAL</th>
-      <th>AKHIR</th>
-    </tr>
-  </thead>
-  <tbody id="tableBody"></tbody>
-</table>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th colspan="2">WAKTU</th>
+        <th rowspan="2">JENIS KEGIATAN</th>
+        <th rowspan="2">JUDUL SABLON</th>
+        <th rowspan="2">JUMLAH BAIK</th>
+      </tr>
+      <tr>
+        <th>AWAL</th>
+        <th>AKHIR</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
 
 <script>
   const totalBaris = 10;
@@ -55,7 +150,28 @@
       <tr>
         <td><input type="text" id="waktuAwal${index}" readonly></td>
         <td><input type="text" id="waktuAkhir${index}" readonly></td>
-        <td><input type="text" id="jenis${index}" oninput="updateAkhirDanAwal(${index})"></td>
+        <td>
+          <div class="custom-dropdown" onclick="toggleDropdown(${index})" id="dropdownDisplay${index}">
+            -- Pilih --
+          </div>
+          <div class="dropdown-options" id="dropdownOptions${index}">
+            <div class="dropdown-columns">
+              <div class="column">
+                <div onclick="selectJenis(${index}, 'Persiapan')">Persiapan</div>
+                <div onclick="selectJenis(${index}, 'Breafing')">Breafing</div>
+                <div onclick="selectJenis(${index}, 'Setting')">Setting</div>
+                <div onclick="selectJenis(${index}, 'Cuci Skreen + Rakel')">Cuci Skreen + Rakel</div>
+                <div onclick="selectJenis(${index}, 'Istirahat')">Istirahat</div>
+              </div>
+              <div class="column">
+                <div onclick="selectJenis(${index}, 'Sablon A1')">Sablon A1</div>
+                <div onclick="selectJenis(${index}, 'Sablon A2')">Sablon A2</div>
+                <div onclick="selectJenis(${index}, 'Sablon B1')">Sablon B1</div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="jenis${index}">
+        </td>
         <td><input type="text" name="judulSablon${index}"></td>
         <td><input type="number" name="jumlahBaik${index}" min="0" oninput="updateAkhirDanAwal(${index})"></td>
       </tr>
@@ -81,8 +197,27 @@
     const awalStr = formatTime(waktu);
     document.getElementById("waktuAwal0").value = awalStr;
 
-    updateAkhirDanAwal(0); // Mulai dari baris pertama
+    updateAkhirDanAwal(0);
   }
+
+  function toggleDropdown(index) {
+    document.querySelectorAll('.dropdown-options').forEach(el => el.style.display = 'none');
+    const options = document.getElementById(`dropdownOptions${index}`);
+    options.style.display = options.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function selectJenis(index, value) {
+    document.getElementById(`dropdownDisplay${index}`).innerText = value;
+    document.getElementById(`jenis${index}`).value = value.toLowerCase();
+    document.getElementById(`dropdownOptions${index}`).style.display = 'none';
+    updateAkhirDanAwal(index);
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.custom-dropdown') && !e.target.closest('.dropdown-options')) {
+      document.querySelectorAll('.dropdown-options').forEach(el => el.style.display = 'none');
+    }
+  });
 
   function updateAkhirDanAwal(index) {
     const jenis = document.getElementById(`jenis${index}`).value.trim().toLowerCase();
@@ -97,8 +232,6 @@
     date.setHours(jam, menit);
 
     let menitTambah = 0;
-
-    // Pembagi khusus
     const pembagiMap = {
       "sablon a1": 4.62,
       "sablon a2": 4.10,
@@ -113,17 +246,17 @@
       "sablon f1": 5.13,
       "sablon f2": 4.62
     };
-    //tinggal tambahkan jenis kegiatan disini
+
     if (jenis === "cuci skreen + rakel" || jenis === "persiapan") {
       menitTambah = 15;
     } else if (["setting", "breafing"].includes(jenis)) {
-    menitTambah = 5;}
-    else if (["istirahat"].includes(jenis)) {
-    menitTambah = 60;}
-    else if (pembagiMap[jenis]) {
+      menitTambah = 5;
+    } else if (jenis === "istirahat") {
+      menitTambah = 60;
+    } else if (pembagiMap[jenis]) {
       let hasil = jumlahBaik / pembagiMap[jenis];
-      hasil = Math.ceil(hasil); // Bulatkan ke atas
-      hasil = Math.round(hasil / 5) * 5; // Ke kelipatan 5
+      hasil = Math.ceil(hasil);
+      hasil = Math.round(hasil / 5) * 5;
       menitTambah = hasil;
     }
 
@@ -134,7 +267,6 @@
       akhirEl.value = "";
     }
 
-    // Update waktu awal baris berikutnya
     const nextIndex = index + 1;
     if (nextIndex < totalBaris && akhirEl.value) {
       document.getElementById(`waktuAwal${nextIndex}`).value = akhirEl.value;
