@@ -3,143 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <title>Laporan Harian Divisi Sablon</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
-  .custom-dropdown {
-    border: 1px solid #ccc;
-    padding: 6px;
-    cursor: pointer;
-    background: #fff;
-    text-align: center;
-  }
-  .dropdown-options {
-    display: none;
-    position: absolute;
-    background: #fff;
-    border: 1px solid #aaa;
-    z-index: 10;
-    width: 300px;
-  }
-  .dropdown-columns {
-    display: flex;
-  }
-  .column {
-    flex: 1;
-    border-right: 1px solid #ddd;
-  }
-  .column:last-child {
-    border-right: none;
-  }
-  .column div {
-    padding: 6px;
-    cursor: pointer;
-  }
-  .column div:hover {
-    background-color: #eee;
-  }
+    body {
+      font-family: Arial, sans-serif;
+    }
 
-  body { font-family: Arial, sans-serif; }
-  .table-container {
-    width: 100%;
-    overflow-x: auto;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    min-width: 700px;
-  }
-  th, td {
-    border: 1px solid black;
-    text-align: center;
-    padding: 10px;
-  }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-  /* Lebar kolom khusus */
-  table th:nth-child(1),
-  table td:nth-child(1),
-  table th:nth-child(2),
-  table td:nth-child(2),
-  table th:nth-child(5),
-  table td:nth-child(5) {
-    width: 80px; /* kolom Waktu Awal, Waktu Akhir, dan Jumlah Baik */
-  }
+    .title {
+      font-weight: bold;
+    }
 
-  table th:nth-child(3),
-  table td:nth-child(3) {
-    width: 100px; /* kolom Jenis Kegiatan */
-    min-width: 200px;
-  }
-
-  table th:nth-child(4),
-  table td:nth-child(4) {
-    width: 80px; /* kolom Judul Sablon */
-    min-width: 100px;
-  }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .title {
-    font-weight: bold;
-  }
-  input[type="text"], input[type="number"] {
-    width: 100%;
-    border: none;
-    text-align: center;
-    font-family: inherit;
-    font-size: inherit;
-  }
-  input:focus {
-    outline: none;
-  }
-
-  @media screen and (max-width: 600px) {
     .table-container {
+      width: 100%;
       overflow-x: auto;
     }
 
     table {
       width: 100%;
-      min-width: 600px;
+      border-collapse: collapse;
+      margin-top: 10px;
+      min-width: 800px;
     }
-  }
+
+    th, td {
+      border: 1px solid black;
+      text-align: center;
+      padding: 10px;
+    }
+
+    table th:nth-child(1),
+    table td:nth-child(1),
+    table th:nth-child(2),
+    table td:nth-child(2),
+    table th:nth-child(4),
+    table td:nth-child(4),
+    table th:nth-child(5),
+    table td:nth-child(5) {
+      width: 80px;
+    }
+
+    table th:nth-child(3),
+    table td:nth-child(3) {
+      width: 150px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      border: none;
+      text-align: center;
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+    .custom-dropdown {
+      border: 1px solid #ccc;
+      padding: 6px;
+      cursor: pointer;
+      background: #fff;
+      text-align: center;
+    }
+
+    .dropdown-options {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border: 1px solid #aaa;
+      z-index: 10;
+      width: 300px;
+    }
+
+    .dropdown-columns {
+      display: flex;
+    }
+
+    .column {
+      flex: 1;
+      border-right: 1px solid #ddd;
+    }
+
+    .column:last-child {
+      border-right: none;
+    }
+
+    .column div {
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    .column div:hover {
+      background-color: #eee;
+    }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="title">
-    CPS<br>
-    LAPORAN HARIAN DIVISI SABLON (MANUAL)
+<!-- BUNGKUS SEMUA DALAM captureArea -->
+<div id="captureArea">
+  <div class="header">
+    <div class="title">
+      CPS<br>
+      LAPORAN HARIAN DIVISI SABLON (MANUAL)
+    </div>
+    <div>
+      Shift:
+      <select id="shift" onchange="generateAwal()">
+        <option value="shift1">Shift 1</option>
+        <option value="shift2">Shift 2</option>
+      </select>
+    </div>
   </div>
-  <div>
-    Shift:
-    <select id="shift" onchange="generateAwal()">
-      <option value="shift1">Shift 1</option>
-      <option value="shift2">Shift 2</option>
-    </select>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2">WAKTU</th>
+          <th rowspan="2">JENIS KEGIATAN</th>
+          <th rowspan="2">JUMLAH BAIK</th>
+          <th rowspan="2">TAMBAH MENIT</th>
+        </tr>
+        <tr>
+          <th>AWAL</th>
+          <th>AKHIR</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
   </div>
 </div>
 
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th colspan="2">WAKTU</th>
-        <th rowspan="2">JENIS KEGIATAN</th>
-        <th rowspan="2">JUDUL SABLON</th>
-        <th rowspan="2">JUMLAH BAIK</th>
-      </tr>
-      <tr>
-        <th>AWAL</th>
-        <th>AKHIR</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+<!-- TOMBOL UNDUH GAMBAR -->
+<div style="margin-top: 20px;">
+  <button onclick="downloadTableImage()">Unduh Gambar Tabel</button>
 </div>
 
 <script>
@@ -160,20 +170,32 @@
                 <div onclick="selectJenis(${index}, 'Persiapan')">Persiapan</div>
                 <div onclick="selectJenis(${index}, 'Breafing')">Breafing</div>
                 <div onclick="selectJenis(${index}, 'Setting')">Setting</div>
+                <div onclick="selectJenis(${index}, 'Rumat Skreen')">Rumat Skreen</div>
                 <div onclick="selectJenis(${index}, 'Cuci Skreen + Rakel')">Cuci Skreen + Rakel</div>
                 <div onclick="selectJenis(${index}, 'Istirahat')">Istirahat</div>
+                <div onclick="selectJenis(${index}, 'Repair')">Repair</div>
+                <div onclick="selectJenis(${index}, 'Bersih-bersih')">Bersih-bersih</div>
               </div>
               <div class="column">
                 <div onclick="selectJenis(${index}, 'Sablon A1')">Sablon A1</div>
                 <div onclick="selectJenis(${index}, 'Sablon A2')">Sablon A2</div>
                 <div onclick="selectJenis(${index}, 'Sablon B1')">Sablon B1</div>
+                <div onclick="selectJenis(${index}, 'Sablon B2')">Sablon B1</div>
+                <div onclick="selectJenis(${index}, 'Sablon C1')">Sablon C1</div>
+                <div onclick="selectJenis(${index}, 'Sablon C2')">Sablon C2</div>
+                <div onclick="selectJenis(${index}, 'Sablon D1')">Sablon D1</div>
+                <div onclick="selectJenis(${index}, 'Sablon D2')">Sablon D1</div>
+                <div onclick="selectJenis(${index}, 'Sablon E1')">Sablon E1</div>
+                <div onclick="selectJenis(${index}, 'Sablon E2')">Sablon E2</div>
+                <div onclick="selectJenis(${index}, 'Sablon F1')">Sablon F1</div>
+                <div onclick="selectJenis(${index}, 'Sablon F2')">Sablon F1</div>
               </div>
             </div>
           </div>
           <input type="hidden" id="jenis${index}">
         </td>
-        <td><input type="text" name="judulSablon${index}"></td>
         <td><input type="number" name="jumlahBaik${index}" min="0" oninput="updateAkhirDanAwal(${index})"></td>
+        <td><input type="number" name="tambahMenit${index}" min="0" oninput="updateAkhirDanAwal(${index})"></td>
       </tr>
     `;
   }
@@ -224,14 +246,16 @@
     const awal = document.getElementById(`waktuAwal${index}`).value;
     const akhirEl = document.getElementById(`waktuAkhir${index}`);
     const jumlahBaik = parseFloat(document.getElementsByName(`jumlahBaik${index}`)[0].value) || 0;
+    const tambahMenitManual = parseFloat(document.getElementsByName(`tambahMenit${index}`)[0].value) || 0;
 
     if (!awal) return;
 
     const [jam, menit] = awal.split(":").map(Number);
     const date = new Date();
-    date.setHours(jam, menit);
+    date.setHours(jam, menit, 0);
 
-    let menitTambah = 0;
+    let totalMenit = tambahMenitManual;
+
     const pembagiMap = {
       "sablon a1": 4.62,
       "sablon a2": 4.10,
@@ -248,20 +272,20 @@
     };
 
     if (jenis === "cuci skreen + rakel" || jenis === "persiapan") {
-      menitTambah = 15;
+      totalMenit += 15;
     } else if (["setting", "breafing"].includes(jenis)) {
-      menitTambah = 5;
+      totalMenit += 5;
     } else if (jenis === "istirahat") {
-      menitTambah = 60;
+      totalMenit += 60;
     } else if (pembagiMap[jenis]) {
       let hasil = jumlahBaik / pembagiMap[jenis];
       hasil = Math.ceil(hasil);
       hasil = Math.round(hasil / 5) * 5;
-      menitTambah = hasil;
+      totalMenit += hasil;
     }
 
-    if (menitTambah > 0) {
-      date.setMinutes(date.getMinutes() + menitTambah);
+    if (totalMenit > 0) {
+      date.setMinutes(date.getMinutes() + totalMenit);
       akhirEl.value = formatTime(date);
     } else {
       akhirEl.value = "";
@@ -281,6 +305,15 @@
     const hh = String(date.getHours()).padStart(2, '0');
     const mm = String(date.getMinutes()).padStart(2, '0');
     return `${hh}:${mm}`;
+  }
+
+  function downloadTableImage() {
+    html2canvas(document.getElementById('captureArea')).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'laporan_sablon.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
   }
 
   window.onload = renderTable;
