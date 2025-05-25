@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Laporan Harian Divisi Sablon</title>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,49 +27,55 @@
 
     table {
       width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      min-width: 800px;
+      border-collapse: collapse; 
+      min-width: 340px;
+      font-family: Arial;
+      font-size:10px;
+      table-layout: fixed;
+      
     }
 
     th, td {
       border: 1px solid black;
       text-align: center;
-      padding: 10px;
+          
     }
 
     table th:nth-child(1),
-    table td:nth-child(1),
-    table th:nth-child(2),
-    table td:nth-child(2),
-    table th:nth-child(4),
-    table td:nth-child(4),
-    table th:nth-child(5),
-    table td:nth-child(5) {
-      width: 80px;
+    table td:nth-child(1) {
+      width: 30px;
     }
-
+    table th:nth-child(2),
+    table td:nth-child(2) {
+      width: 50px;
+    }
+    table th:nth-child(4),
+    table td:nth-child(4) {
+      width: 20px; 
+    }
     table th:nth-child(3),
     table td:nth-child(3) {
-      width: 150px;
+      width: 20px;
     }
 
-    input[type="text"],
-    input[type="number"] {
-      width: 100%;
-      border: none;
-      text-align: center;
-      font-family: inherit;
-      font-size: inherit;
-    }
+    input[type="number"],
+input[type="text"] {
+  
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  text-align: center;
+  font-family: inherit;
+  font-size: inherit;
+}
 
+  
     input:focus {
       outline: none;
     }
 
     .custom-dropdown {
-      border: 1px solid #ccc;
-      padding: 6px;
+      border: 1px solid #ccc;  
       cursor: pointer;
       background: #fff;
       text-align: center;
@@ -153,7 +159,7 @@
 </div>
 
 <script>
-  const totalBaris = 10;
+  const totalBaris = 20;
 
   function createRow(index) {
     return `
