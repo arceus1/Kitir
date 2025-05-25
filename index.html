@@ -32,13 +32,11 @@
       font-family: Arial;
       font-size:10px;
       table-layout: fixed;
-      
     }
 
     th, td {
       border: 1px solid black;
       text-align: center;
-          
     }
 
     table th:nth-child(1),
@@ -59,17 +57,15 @@
     }
 
     input[type="number"],
-input[type="text"] {
-  
-  width: 100%;
-  box-sizing: border-box;
-  border: none;
-  text-align: center;
-  font-family: inherit;
-  font-size: inherit;
-}
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      text-align: center;
+      font-family: inherit;
+      font-size: inherit;
+    }
 
-  
     input:focus {
       outline: none;
     }
@@ -118,8 +114,6 @@ input[type="text"] {
 </head>
 <body>
 
-<!-- BUNGKUS SEMUA DALAM captureArea -->
-<div id="captureArea">
   <div class="header">
     <div class="title">
       CPS<br>
@@ -151,12 +145,7 @@ input[type="text"] {
       <tbody id="tableBody"></tbody>
     </table>
   </div>
-</div>
 
-<!-- TOMBOL UNDUH GAMBAR -->
-<div style="margin-top: 20px;">
-  <button onclick="downloadTableImage()">Unduh Gambar Tabel</button>
-</div>
 
 <script>
   const totalBaris = 20;
@@ -311,15 +300,6 @@ input[type="text"] {
     const hh = String(date.getHours()).padStart(2, '0');
     const mm = String(date.getMinutes()).padStart(2, '0');
     return `${hh}:${mm}`;
-  }
-
-  function downloadTableImage() {
-    html2canvas(document.getElementById('captureArea')).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'laporan_sablon.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
   }
 
   window.onload = renderTable;
