@@ -162,8 +162,7 @@
           <div class="dropdown-options" id="dropdownOptions${index}">
             <div class="dropdown-columns">
               <div class="column">
-                <div onclick="selectJenis(${index}, 'Persiapan')">Persiapan</div>
-                <div onclick="selectJenis(${index}, 'Breafing')">Breafing</div>
+                <div onclick="selectJenis(${index}, 'Persiapan & Breafing')">Persiapan & Breafing</div>
                 <div onclick="selectJenis(${index}, 'Buka Tas')">Buka Tas</div>
                 <div onclick="selectJenis(${index}, 'Setting')">Setting</div>
                 <div onclick="selectJenis(${index}, 'Rumat Skreen')">Rumat Skreen</div>
@@ -267,7 +266,7 @@
       "sablon f2": 3.85
     };
 
-    if (jenis === "cuci skreen + rakel" || jenis === "persiapan") {
+    if (jenis === "cuci skreen + rakel" || jenis === "persiapan & breafing") {
       totalMenit += 15;
     } else if (["setting", "breafing"].includes(jenis)) {
       totalMenit += 5;
